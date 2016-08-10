@@ -4,6 +4,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 module Control.Zipper.Simple (
   Root,
@@ -21,17 +22,22 @@ module Control.Zipper.Simple (
   deleteFocus
 ) where
 
+import Data.Data
 import Control.Lens
 
-newtype Root a = Root { unroot :: a }
+newtype Root a = Root {
+    unroot :: a
+  } deriving (Eq, Show, Typeable, Data)
 
 infixl 8 ==>
 data z ==> a =
   One (a -> z) a
+    deriving (Typeable)
 
 infixl 8 =*=>
 data z =*=> a =
   Many ([a] -> z) [a] [a] a
+    deriving (Typeable)
 
 class Focused z where
   type FocusedAt z
